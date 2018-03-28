@@ -1,0 +1,14 @@
+copter\storage_manager.o: ..\mpl\mllite\storage_manager.c
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+copter\storage_manager.o: ..\mpl\mllite\storage_manager.h
+copter\storage_manager.o: ..\mpl\driver\include\mltypes.h
+copter\storage_manager.o: ..\mpl\driver\include\stdint_invensense.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+copter\storage_manager.o: ..\mpl\driver\include\log.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+copter\storage_manager.o: ..\mpl\mllite\ml_math_func.h
+copter\storage_manager.o: ..\mpl\driver\include\mlmath.h
+copter\storage_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h

@@ -1,0 +1,14 @@
+copter\empl_outputs.o: ..\mpl\eMPL-hal\eMPL_outputs.c
+copter\empl_outputs.o: ..\mpl\eMPL-hal\eMPL_outputs.h
+copter\empl_outputs.o: ..\mpl\driver\include\mltypes.h
+copter\empl_outputs.o: ..\mpl\driver\include\stdint_invensense.h
+copter\empl_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copter\empl_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+copter\empl_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+copter\empl_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+copter\empl_outputs.o: ..\mpl\mllite\ml_math_func.h
+copter\empl_outputs.o: ..\mpl\driver\include\mlmath.h
+copter\empl_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+copter\empl_outputs.o: ..\mpl\mllite\start_manager.h
+copter\empl_outputs.o: ..\mpl\mllite\data_builder.h
+copter\empl_outputs.o: ..\mpl\mllite\results_holder.h

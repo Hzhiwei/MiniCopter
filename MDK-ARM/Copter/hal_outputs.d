@@ -1,0 +1,17 @@
+copter\hal_outputs.o: ..\mpl\mllite\hal_outputs.c
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+copter\hal_outputs.o: ..\mpl\mllite\hal_outputs.h
+copter\hal_outputs.o: ..\mpl\driver\include\mltypes.h
+copter\hal_outputs.o: ..\mpl\driver\include\stdint_invensense.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+copter\hal_outputs.o: ..\mpl\driver\include\log.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+copter\hal_outputs.o: ..\mpl\mllite\ml_math_func.h
+copter\hal_outputs.o: ..\mpl\driver\include\mlmath.h
+copter\hal_outputs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+copter\hal_outputs.o: ..\mpl\mllite\start_manager.h
+copter\hal_outputs.o: ..\mpl\mllite\data_builder.h
+copter\hal_outputs.o: ..\mpl\mllite\results_holder.h

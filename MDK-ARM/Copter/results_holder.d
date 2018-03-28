@@ -1,0 +1,17 @@
+copter\results_holder.o: ..\mpl\mllite\results_holder.c
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+copter\results_holder.o: ..\mpl\mllite\results_holder.h
+copter\results_holder.o: ..\mpl\driver\include\mltypes.h
+copter\results_holder.o: ..\mpl\driver\include\stdint_invensense.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+copter\results_holder.o: ..\mpl\mllite\ml_math_func.h
+copter\results_holder.o: ..\mpl\driver\include\mlmath.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+copter\results_holder.o: ..\mpl\mllite\start_manager.h
+copter\results_holder.o: ..\mpl\mllite\data_builder.h
+copter\results_holder.o: ..\mpl\mllite\message_layer.h
+copter\results_holder.o: ..\mpl\driver\include\log.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+copter\results_holder.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h

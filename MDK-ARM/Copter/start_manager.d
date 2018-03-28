@@ -1,0 +1,11 @@
+copter\start_manager.o: ..\mpl\mllite\start_manager.c
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+copter\start_manager.o: ..\mpl\driver\include\log.h
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+copter\start_manager.o: ..\mpl\mllite\start_manager.h
+copter\start_manager.o: ..\mpl\driver\include\mltypes.h
+copter\start_manager.o: ..\mpl\driver\include\stdint_invensense.h
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+copter\start_manager.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
