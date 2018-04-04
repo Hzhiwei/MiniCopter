@@ -86,3 +86,4 @@ copter\task_control.o: ..\mpl\mpl\quaternion_supervisor.h
 copter\task_control.o: ..\mpl\eMPL-hal\eMPL_outputs.h
 copter\task_control.o: ..\mpl\driver\include\mpu.h
 copter\task_control.o: ..\HardwareDriver\inc\LC12S.h
+copter\task_control.o: ..\HardwareDriver\inc\Algorithm.h

@@ -5,6 +5,7 @@
 #include "stm32f3xx_hal.h"
 
 
+//通信协议的各个标志位，数据分开的细节
 /*
 通信协议：
 
@@ -25,9 +26,10 @@ byte0 标志位：
 		bit0 : 
 
 byte1 油门：	0 ~ 100
-byte2 左右偏转： -100 ~ 100，实际角度为数据值/4
-byte3 前后偏转： -100 ~ 100，实际角度为数据值/4
-byte4 偏移调节： 
+byte2 左右偏转： -100 ~ 100，实际角度为数据值/4，左负右正
+byte3 前后偏转： -100 ~ 100，实际角度为数据值/4，后负前正
+byte4 自旋：     -100 ~ 100，左负右正
+byte5 偏移调节： 
 		bit7 : 0 无作用，1 左右偏移
 		bit6 : 0 左偏0.1度，1 右偏0.1度
 		bit5 : 0 无作用，1 前后偏移
@@ -36,7 +38,7 @@ byte4 偏移调节：
 		bit2 : 0 无作用，1 前后偏移归零
 		bit1 : 0 无作用，1 偏移写入flash
 		bit0 : 
-byte5 校验和	
+byte6 校验和
 */
 typedef struct 
 {
@@ -48,8 +50,10 @@ typedef struct
 	uint8_t power;
 	//左右倾斜	左负右正
 	int8_t  LR;
-	//前后倾斜	前正后负
+	//前后倾斜	后负前正
 	int8_t  FB;
+	//自旋	左负右正
+	int8_t  SP;
 	//左右倾斜偏移调节
 	/*
 	0：无作用
@@ -66,6 +70,8 @@ typedef struct
 uint8_t LC12S_Init(uint16_t Net);
 void LC12S_Start(void);
 uint8_t LC12S_ReceiveAnalyze(void);
+uint8_t LC12S_ReceiveAnalyzeAndGetData(protocolDetail *pd);
+void LC12S_GetData(protocolDetail *pd);
 
 
 #endif

@@ -17,6 +17,7 @@ typedef union
 		uint8_t power;
 		int8_t LR;
 		int8_t FB;
+		int8_t SP;
 		uint8_t adjust;
 	}fusion;
 	uint8_t array[sizeof(struct combin) + 1];	//最后一个字节为校验和
@@ -42,7 +43,7 @@ uint8_t LC12S_Init(uint16_t Net)
 	LS12S_SET;
 	osDelay(30);
 	LS12S_RESET;
-	osDelay(20);
+	osDelay(100);
 	
 	LS12SParam[4] = Net >> 8;
 	LS12SParam[5] = Net;
@@ -110,7 +111,10 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	uint8_t Flag = 0;	//分析状态，0：查找帧尾，1查找帧尾后查找帧头，2发现完整帧
 	uint8_t frameStart;	//除帧头后的数据的第一个数据的位置
 	uint8_t frameEnd;	//除帧尾后的数据的最后一个数据的下一个位置
-	uint8_t dataLength = dataStartPoint <= dataEndPoint ? dataEndPoint - dataStartPoint : DATAREPOLENGTH - dataStartPoint - 1 + dataEndPoint;
+	uint8_t dataLength;
+	Flag = 0;
+	dataLength = dataStartPoint <= dataEndPoint ? dataEndPoint - dataStartPoint : DATAREPOLENGTH - dataStartPoint - 1 + dataEndPoint;
+	
 	if(dataLength >= sizeof(protocolTransmit) + 4)
 	{
 		for(int i = PREVIOUS(PREVIOUS(dataEndPoint)); i != dataStartPoint; i = PREVIOUS(i))
@@ -119,7 +123,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 			{
 				case 0 :
 				{
-					if((dataRepo[i] == 0xFF) && (dataRepo[i + 1] == 0x02))
+					if((dataRepo[i] == 0xFF) && (dataRepo[NEXT(i)] == 0x02))
 					{
 						frameEnd = i;
 						Flag = 1;
@@ -128,7 +132,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 				}
 				case 1 :
 				{
-					if((dataRepo[i] == 0xFF) && (dataRepo[i + 1] == 0x01))
+					if((dataRepo[i] == 0xFF) && (dataRepo[NEXT(i)] == 0x01))
 					{
 						frameStart = NEXT(NEXT(i));
 						Flag = 2;
@@ -162,10 +166,10 @@ uint8_t LC12S_ReceiveAnalyze(void)
 		if(dataRepo[i] == 0xFF)
 		{
 			i = NEXT(i);
-			switch(i)
+			switch(dataRepo[i])
 			{
 				case 0x00 : dataArranged[dataCounter] = 0xFF; break;
-				default : dataArranged[dataCounter] = dataRepo[i]; break;
+				default : break;
 			}
 		}
 		else
@@ -202,6 +206,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	currentStatus.power = temp.fusion.power;
 	currentStatus.LR = temp.fusion.LR;
 	currentStatus.FB = temp.fusion.FB;
+	currentStatus.SP = temp.fusion.SP;
 	currentStatus.adjust = temp.fusion.adjust;
 	
 	return 1;
@@ -213,6 +218,24 @@ uint8_t LC12S_ReceiveAnalyze(void)
 }
 
 
+uint8_t LC12S_ReceiveAnalyzeAndGetData(protocolDetail *pd)
+{
+	if(LC12S_ReceiveAnalyze())
+	{
+		*pd = currentStatus;
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+void LC12S_GetData(protocolDetail *pd)
+{
+	*pd = currentStatus;
+}
 
 
 

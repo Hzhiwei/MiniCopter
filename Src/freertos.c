@@ -150,8 +150,13 @@ void SystemInitConfigTask(void const * argument)
 	{
 		while(1)
 		{
-			
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
+			osDelay(300);
 		}
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 	}
 	
 	osThreadDef(Control, task_Control, osPriorityBelowNormal, 0, 128);
