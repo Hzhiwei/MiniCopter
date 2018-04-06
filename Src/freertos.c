@@ -151,7 +151,7 @@ void SystemInitConfigTask(void const * argument)
 		while(1)
 		{
 			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
-			osDelay(300);
+			osDelay(50);
 		}
 	}
 	else
