@@ -41,6 +41,7 @@ copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash_ex.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c_ex.h
+copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_iwdg.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd_ex.h
 copter\freertos.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr.h
@@ -88,3 +89,4 @@ copter\freertos.o: ..\task\inc\task_Control.h
 copter\freertos.o: ..\HardwareDriver\inc\Motor.h
 copter\freertos.o: ..\HardwareDriver\inc\LC12S.h
 copter\freertos.o: ../Inc/externParam.h
+copter\freertos.o: ../Inc/iwdg.h

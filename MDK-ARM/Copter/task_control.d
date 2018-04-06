@@ -26,6 +26,7 @@ copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash_ex.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c_ex.h
+copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_iwdg.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd_ex.h
 copter\task_control.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr.h
@@ -88,3 +89,4 @@ copter\task_control.o: ..\mpl\driver\include\mpu.h
 copter\task_control.o: ..\HardwareDriver\inc\LC12S.h
 copter\task_control.o: ..\HardwareDriver\inc\Motor.h
 copter\task_control.o: ..\HardwareDriver\inc\Algorithm.h
+copter\task_control.o: ../Inc/externParam.h

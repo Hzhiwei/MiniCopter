@@ -25,6 +25,7 @@ copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_flash_ex.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_i2c_ex.h
+copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_iwdg.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pcd_ex.h
 copter\main.o: ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr.h
@@ -48,6 +49,7 @@ copter\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 copter\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 copter\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 copter\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+copter\main.o: ../Inc/iwdg.h
 copter\main.o: ../Inc/tim.h
 copter\main.o: ../Inc/usart.h
 copter\main.o: ../Inc/usb.h
