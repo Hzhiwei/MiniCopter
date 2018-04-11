@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
+  * File Name          : stm32f3xx_hal_msp.c
+  * Description        : This file provides code for the MSP Initialization 
+  *                      and de-Initialization codes.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -45,132 +46,57 @@
   *
   ******************************************************************************
   */
-
 /* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "cmsis_os.h"
+#include "stm32f3xx_hal.h"
 
-/* USER CODE BEGIN Includes */     
-#include "mpu6500.h"
-#include "task_Control.h"
-#include "Motor.h"
-#include "LC12S.h"
-#include "externParam.h"
-#include "iwdg.h"
-/* USER CODE END Includes */
+extern void _Error_Handler(char *, int);
+/* USER CODE BEGIN 0 */
 
-/* Variables -----------------------------------------------------------------*/
-osThreadId SystemInitHandle;
-
-/* USER CODE BEGIN Variables */
-osThreadId task_Control_Handle;
-/* USER CODE END Variables */
-
-/* Function prototypes -------------------------------------------------------*/
-void SystemInitConfigTask(void const * argument);
-
-void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
-
-/* USER CODE BEGIN FunctionPrototypes */
-
-/* USER CODE END FunctionPrototypes */
-
-/* Hook prototypes */
-
-/* Init FreeRTOS */
-
-void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
-       
-  /* USER CODE END Init */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* Create the thread(s) */
-  /* definition and creation of SystemInit */
-  osThreadDef(SystemInit, SystemInitConfigTask, osPriorityNormal, 0, 128);
-  SystemInitHandle = osThreadCreate(osThread(SystemInit), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-}
-
-/* SystemInitConfigTask function */
-void SystemInitConfigTask(void const * argument)
+/* USER CODE END 0 */
+/**
+  * Initializes the Global MSP.
+  */
+void HAL_MspInit(void)
 {
+  /* USER CODE BEGIN MspInit 0 */
 
-  /* USER CODE BEGIN SystemInitConfigTask */
-  /* Infinite loop */
-	uint8_t failFlag = 0;
-	
-	__HAL_UART_ENABLE(&huart1);
-	
-	uint8_t counter = 0;
-	
-	if(!LC12S_Init(0x12))
-	{
-		failFlag = 1;
-		goto InitFail;
-	}
-	LC12S_Start();
-	
-	for(counter = 0; counter < 10; ++counter)
-	{
-		if(!MPU6500_InitConfig())
-		{
-			break;
-		}
-		vTaskDelay(100);
-	}
-	if(counter == 10)
-	{
-		failFlag = 1;
-		goto InitFail;
-	}
-	
-	Motor_Init();
-	
-	InitFail:	
-	if(failFlag)
-	{
-		while(1)
-		{
-			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
-			osDelay(50);
-		}
-	}
-	else
-	{
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
-	}
+  /* USER CODE END MspInit 0 */
 
-	MX_IWDG_Init();
-	
-	osThreadDef(Control, task_Control, osPriorityBelowNormal, 0, 128);
-	task_Control_Handle = osThreadCreate(osThread(Control), NULL);
-	
-	vTaskDelete(NULL);
-  /* USER CODE END SystemInitConfigTask */
+  __HAL_RCC_SYSCFG_CLK_ENABLE();
+
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+  /* System interrupt init*/
+  /* MemoryManagement_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(MemoryManagement_IRQn, 0, 0);
+  /* BusFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(BusFault_IRQn, 0, 0);
+  /* UsageFault_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
+  /* SVCall_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SVCall_IRQn, 0, 0);
+  /* DebugMonitor_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DebugMonitor_IRQn, 0, 0);
+  /* PendSV_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
+  /* SysTick_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
+
+  /* USER CODE BEGIN MspInit 1 */
+
+  /* USER CODE END MspInit 1 */
 }
 
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -322,6 +322,7 @@ uint8_t MPU6500_eMPLEular(Euler_Type *E, Acce_Type *A, Gyro_Type *G, inv_time_t 
 }
 
 
+
 uint8_t MPU6500_GetEular(Euler_Type *E, inv_time_t T)
 {
 	Acce_Type CurrentAcc;

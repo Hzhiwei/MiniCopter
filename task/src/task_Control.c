@@ -4,7 +4,10 @@
 #include "LC12S.h"
 #include "Motor.h"
 #include "Algorithm.h"
+#include "externParam.h"
 
+
+#define RCROCKERRATE	4.0f
 
 #define LOSTSTOP	20
 
@@ -37,10 +40,10 @@ void task_Control(const void *Parameters)
 		.flyStatus = 123
 	};
 	
-	PID_InitConfig(&PitchOUTPID, 1, 0, 0, 0, 20);
-	PID_InitConfig(&PitchINPID, 1.5, 0, 2, 0, 50);
-	PID_InitConfig(&RollOUTPID, 1.5, 0, 0, 0, 20);
-	PID_InitConfig(&RollINPID, 1, 0, 2, 0, 50);
+	PID_InitConfig(&PitchOUTPID, 10.5, 0, 10, 0, 100);
+	PID_InitConfig(&PitchINPID, 0.5, 0, 1, 0, 25);
+	PID_InitConfig(&RollOUTPID, 10.5, 0, 10, 0, 100);
+	PID_InitConfig(&RollINPID, 0.5, 0, 2, 0, 25);
 	PID_InitConfig(&YawOUTPID, 2.5, 0, 0, 0, 30);
 	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 30);
 	
@@ -60,8 +63,6 @@ void task_Control(const void *Parameters)
 		}
 		Motor_Control();
 		
-		//LC12S_Send(&spd);
-		
 		if(LEDCounter < 60)
 		{
 			++LEDCounter;
@@ -71,6 +72,8 @@ void task_Control(const void *Parameters)
 			LEDCounter = 0;
 			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
 		}
+		
+        HAL_IWDG_Refresh(&hiwdg);
 		
 		vTaskDelayUntil(&tick, 5);
 	}
@@ -94,11 +97,11 @@ static void Motor_Control(void)
 		return;
 	}
 	
-	PID_Calculate(&PitchOUTPID, -rpd.LR / 4.0f, CurrentEuler.Pitch);
+	PID_Calculate(&PitchOUTPID, -rpd.FB / RCROCKERRATE, CurrentEuler.Pitch);
 	PID_Calculate(&PitchINPID, PitchOUTPID.PIDout, CurrentGyro.y);
-	PID_Calculate(&RollOUTPID, -rpd.FB / 4.0f, CurrentEuler.Roll);
+	PID_Calculate(&RollOUTPID, -rpd.LR / RCROCKERRATE, CurrentEuler.Roll);
 	PID_Calculate(&RollINPID, RollOUTPID.PIDout, CurrentGyro.x);
-	PID_Calculate(&YawOUTPID, -rpd.SP / 4.0f, CurrentEuler.Yaw);
+	PID_Calculate(&YawOUTPID, -rpd.SP / RCROCKERRATE, CurrentEuler.Yaw);
 	PID_Calculate(&YawINPID, YawOUTPID.PIDout, CurrentGyro.z);
 	
 	tempSpeed[0] = (int16_t)rpd.power + PitchINPID.PIDout - RollINPID.PIDout + YawINPID.PIDout;

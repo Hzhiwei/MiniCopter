@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : freertos.c
-  * Description        : Code for freertos applications
+  * File Name          : USB.c
+  * Description        : This file provides code for the configuration
+  *                      of the USB instances.
   ******************************************************************************
   * This notice applies to any and all portions of this file
   * that are not between comment pairs USER CODE BEGIN and
@@ -47,130 +48,97 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "cmsis_os.h"
+#include "usb.h"
 
-/* USER CODE BEGIN Includes */     
-#include "mpu6500.h"
-#include "task_Control.h"
-#include "Motor.h"
-#include "LC12S.h"
-#include "externParam.h"
-#include "iwdg.h"
-/* USER CODE END Includes */
+#include "gpio.h"
 
-/* Variables -----------------------------------------------------------------*/
-osThreadId SystemInitHandle;
+/* USER CODE BEGIN 0 */
 
-/* USER CODE BEGIN Variables */
-osThreadId task_Control_Handle;
-/* USER CODE END Variables */
+/* USER CODE END 0 */
 
-/* Function prototypes -------------------------------------------------------*/
-void SystemInitConfigTask(void const * argument);
+PCD_HandleTypeDef hpcd_USB_FS;
 
-void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+/* USB init function */
 
-/* USER CODE BEGIN FunctionPrototypes */
-
-/* USER CODE END FunctionPrototypes */
-
-/* Hook prototypes */
-
-/* Init FreeRTOS */
-
-void MX_FREERTOS_Init(void) {
-  /* USER CODE BEGIN Init */
-       
-  /* USER CODE END Init */
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
-
-  /* Create the thread(s) */
-  /* definition and creation of SystemInit */
-  osThreadDef(SystemInit, SystemInitConfigTask, osPriorityNormal, 0, 128);
-  SystemInitHandle = osThreadCreate(osThread(SystemInit), NULL);
-
-  /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
-
-  /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
-  /* USER CODE END RTOS_QUEUES */
-}
-
-/* SystemInitConfigTask function */
-void SystemInitConfigTask(void const * argument)
+void MX_USB_PCD_Init(void)
 {
 
-  /* USER CODE BEGIN SystemInitConfigTask */
-  /* Infinite loop */
-	uint8_t failFlag = 0;
-	
-	__HAL_UART_ENABLE(&huart1);
-	
-	uint8_t counter = 0;
-	
-	if(!LC12S_Init(0x12))
-	{
-		failFlag = 1;
-		goto InitFail;
-	}
-	LC12S_Start();
-	
-	for(counter = 0; counter < 10; ++counter)
-	{
-		if(!MPU6500_InitConfig())
-		{
-			break;
-		}
-		vTaskDelay(100);
-	}
-	if(counter == 10)
-	{
-		failFlag = 1;
-		goto InitFail;
-	}
-	
-	Motor_Init();
-	
-	InitFail:	
-	if(failFlag)
-	{
-		while(1)
-		{
-			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
-			osDelay(50);
-		}
-	}
-	else
-	{
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
-	}
+  hpcd_USB_FS.Instance = USB;
+  hpcd_USB_FS.Init.dev_endpoints = 8;
+  hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
+  hpcd_USB_FS.Init.ep0_mps = DEP0CTL_MPS_64;
+  hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
+  hpcd_USB_FS.Init.low_power_enable = DISABLE;
+  hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
+  if (HAL_PCD_Init(&hpcd_USB_FS) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
 
-	MX_IWDG_Init();
-	
-	osThreadDef(Control, task_Control, osPriorityBelowNormal, 0, 128);
-	task_Control_Handle = osThreadCreate(osThread(Control), NULL);
-	
-	vTaskDelete(NULL);
-  /* USER CODE END SystemInitConfigTask */
 }
 
-/* USER CODE BEGIN Application */
-     
-/* USER CODE END Application */
+void HAL_PCD_MspInit(PCD_HandleTypeDef* pcdHandle)
+{
+
+  GPIO_InitTypeDef GPIO_InitStruct;
+  if(pcdHandle->Instance==USB)
+  {
+  /* USER CODE BEGIN USB_MspInit 0 */
+
+  /* USER CODE END USB_MspInit 0 */
+  
+    /**USB GPIO Configuration    
+    PA11     ------> USB_DM
+    PA12     ------> USB_DP 
+    */
+    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF14_USB;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* USB clock enable */
+    __HAL_RCC_USB_CLK_ENABLE();
+  /* USER CODE BEGIN USB_MspInit 1 */
+
+  /* USER CODE END USB_MspInit 1 */
+  }
+}
+
+void HAL_PCD_MspDeInit(PCD_HandleTypeDef* pcdHandle)
+{
+
+  if(pcdHandle->Instance==USB)
+  {
+  /* USER CODE BEGIN USB_MspDeInit 0 */
+
+  /* USER CODE END USB_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_USB_CLK_DISABLE();
+  
+    /**USB GPIO Configuration    
+    PA11     ------> USB_DM
+    PA12     ------> USB_DP 
+    */
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
+
+  /* USER CODE BEGIN USB_MspDeInit 1 */
+
+  /* USER CODE END USB_MspDeInit 1 */
+  }
+} 
+
+/* USER CODE BEGIN 1 */
+
+/* USER CODE END 1 */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

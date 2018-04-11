@@ -57,7 +57,6 @@
 #include "Motor.h"
 #include "LC12S.h"
 #include "externParam.h"
-#include "iwdg.h"
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -145,7 +144,7 @@ void SystemInitConfigTask(void const * argument)
 	}
 	
 	Motor_Init();
-	
+
 	InitFail:	
 	if(failFlag)
 	{
@@ -159,8 +158,6 @@ void SystemInitConfigTask(void const * argument)
 	{
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 	}
-
-	MX_IWDG_Init();
 	
 	osThreadDef(Control, task_Control, osPriorityBelowNormal, 0, 128);
 	task_Control_Handle = osThreadCreate(osThread(Control), NULL);
