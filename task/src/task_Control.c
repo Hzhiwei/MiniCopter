@@ -4,6 +4,7 @@
 #include "LC12S.h"
 #include "Motor.h"
 #include "Algorithm.h"
+#include "Flash.h"
 #include "externParam.h"
 
 
@@ -30,23 +31,26 @@ static ReceiveProtocolDetail rpd =
 
 static void Motor_Control(void);
 
-
+ 
 void task_Control(const void *Parameters)
 {
 	TickType_t tick;
 	uint16_t LEDCounter = 0;
+	float EulerOffet[3];
 	SendProtocolDetail spd =
 	{
 		.flyStatus = 123
 	};
 	
 	PID_InitConfig(&PitchOUTPID, 10.5, 0, 10, 0, 100);
-	PID_InitConfig(&PitchINPID, 0.5, 0, 1, 0, 25);
+	PID_InitConfig(&PitchINPID, 0.25, 0, 1, 0, 25);
 	PID_InitConfig(&RollOUTPID, 10.5, 0, 10, 0, 100);
-	PID_InitConfig(&RollINPID, 0.5, 0, 2, 0, 25);
-	PID_InitConfig(&YawOUTPID, 2.5, 0, 0, 0, 30);
-	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 30);
+	PID_InitConfig(&RollINPID, 0.25, 0, 2, 0, 25);
+	PID_InitConfig(&YawOUTPID, 5, 0, 0, 0, 30);
+	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 50);
 	
+	//Flash_Read_Mpu6500EulerOffet(EulerOffet);
+	MPU6500_SetEulerOffset(EulerOffet);
 	
 	while(1)
 	{

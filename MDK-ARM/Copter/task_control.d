@@ -89,4 +89,5 @@ copter\task_control.o: ..\mpl\driver\include\mpu.h
 copter\task_control.o: ..\HardwareDriver\inc\LC12S.h
 copter\task_control.o: ..\HardwareDriver\inc\Motor.h
 copter\task_control.o: ..\HardwareDriver\inc\Algorithm.h
+copter\task_control.o: ..\HardwareDriver\inc\Flash.h
 copter\task_control.o: ../Inc/externParam.h

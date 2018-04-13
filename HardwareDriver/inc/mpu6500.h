@@ -75,6 +75,8 @@ typedef struct
 }Quat_Type;
 
 
+uint8_t MPU6500_SetEulerOffset(float offset[3]);
+uint8_t MPU6500_GetEulerOffset(float offset[3]);
 uint8_t MPU6500_check(void);
 uint8_t MPU6500_InitConfig(void);
 uint8_t MPU6500_GetIMUMotion(Acce_Type *A, Gyro_Type *G);

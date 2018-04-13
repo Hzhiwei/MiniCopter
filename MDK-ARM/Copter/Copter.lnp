@@ -4,6 +4,7 @@
 "copter\lc12s.o"
 "copter\motor.o"
 "copter\mpu6500.o"
+"copter\flash.o"
 "copter\task_control.o"
 "copter\main.o"
 "copter\tim.o"

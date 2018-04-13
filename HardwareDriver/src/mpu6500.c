@@ -112,6 +112,21 @@ float EulerOffset[3] = {1.11, 0.89, 0};
 void mpu_accel_lpfset(void);
 
 
+uint8_t MPU6500_SetEulerOffset(float offset[3])
+{
+	EulerOffset[0] = offset[0];
+	EulerOffset[1] = offset[1];
+	EulerOffset[2] = offset[2];
+}
+
+uint8_t MPU6500_GetEulerOffset(float offset[3])
+{
+	offset[0] = EulerOffset[0];
+	offset[1] = EulerOffset[1];
+	offset[2] = EulerOffset[2];
+}
+
+
 uint8_t MPU6500_InitConfig(void)
 {
 	//ºÏ≤‚MPU6500 «∑Ò¥Ê‘⁄
