@@ -55,7 +55,7 @@
 #include "mpu6500.h"
 #include "task_Control.h"
 #include "Motor.h"
-#include "LC12S.h"
+#include "Bluetooth.h"
 #include "externParam.h"
 #include "iwdg.h"
 /* USER CODE END Includes */
@@ -122,13 +122,6 @@ void SystemInitConfigTask(void const * argument)
 	__HAL_UART_ENABLE(&huart1);
 	
 	uint8_t counter = 0;
-	
-	if(!LC12S_Init(0x12))
-	{
-		failFlag = 1;
-		goto InitFail;
-	}
-	LC12S_Start();
 	
 	for(counter = 0; counter < 10; ++counter)
 	{

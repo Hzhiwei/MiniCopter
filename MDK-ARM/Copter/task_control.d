@@ -86,7 +86,7 @@ copter\task_control.o: ..\mpl\mpl\no_gyro_fusion.h
 copter\task_control.o: ..\mpl\mpl\quaternion_supervisor.h
 copter\task_control.o: ..\mpl\eMPL-hal\eMPL_outputs.h
 copter\task_control.o: ..\mpl\driver\include\mpu.h
-copter\task_control.o: ..\HardwareDriver\inc\LC12S.h
+copter\task_control.o: ..\HardwareDriver\inc\Bluetooth.h
 copter\task_control.o: ..\HardwareDriver\inc\Motor.h
 copter\task_control.o: ..\HardwareDriver\inc\Algorithm.h
 copter\task_control.o: ..\HardwareDriver\inc\Flash.h

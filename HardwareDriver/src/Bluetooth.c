@@ -1,6 +1,6 @@
 
 #include <string.h>
-#include "LC12S.h"
+#include "Bluetooth.h"
 #include "externParam.h"
 #include "cmsis_os.h"
 
@@ -80,15 +80,8 @@ typedef struct
 static ReceiveProtocolDetail currentStatus;
 
 
-#define	LS12S_SET	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET)
-#define	LS12S_RESET	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET)
-
-
 static uint8_t SendBuffer[32];
 static uint8_t ReceiveBuffer[RBLENGTH];
-
-
-static uint8_t LS12SParam[18] = {0xAA,0x5A,0x00,0x05,0x00,0x00,0x00,0x00,0x00,0x04,0x00,0x00,0x00,0x00,0x00,0x12,0x00,0x00};
 
 
 static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);	
@@ -96,48 +89,7 @@ static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);
 
 uint8_t LC12S_Init(uint16_t Net)
 {
-	LS12S_SET;
-	osDelay(30);
-	LS12S_RESET;
-	osDelay(100);
-	
-	LS12SParam[4] = Net >> 8;
-	LS12SParam[5] = Net;
-	LS12SParam[17] = 0;
-	for(uint8_t i = 0; i < 17; ++i)
-	{
-		LS12SParam[17] += LS12SParam[i];
-	}
-	huart1.Instance->ISR = ~((uint16_t)0x0020);
-	if(HAL_UART_Transmit(&huart1, LS12SParam, 18, 100) != HAL_OK)
-	{
-		return 0;
-	}
-	if(HAL_UART_Receive(&huart1, ReceiveBuffer, 18, 100) != HAL_OK)
-	{
-		return 0;
-	}
-	
-	uint8_t sum = 0;
-	for(uint8_t i = 0; i < 17; ++i)
-	{
-		sum += ReceiveBuffer[i];
-	}
-	if(sum != ReceiveBuffer[17])
-	{
-		return 0;
-	}
-	
-	LS12S_SET;
-	
-	return 1;
-}
-
-
-void LC12S_Start(void)
-{
-	HAL_UART_Receive_IT(&huart1, ReceiveBuffer, RBLENGTH);
-	LS12S_SET;
+	return 0;
 }
 
 
@@ -165,10 +117,10 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	HAL_UART_Receive_IT(&huart1, ReceiveBuffer, RBLENGTH);
 	
 	//查找帧头或帧尾
-	uint8_t Flag = 0;	//分析状态，0：查找帧尾，1查找帧尾后查找帧头，2发现完整帧
-	uint8_t frameStart;	//除帧头后的数据的第一个数据的位置
-	uint8_t frameEnd;	//除帧尾后的数据的最后一个数据的下一个位置
-	uint8_t dataLength;
+	static uint8_t Flag = 0;	//分析状态，0：查找帧尾，1查找帧尾后查找帧头，2发现完整帧
+	static uint8_t frameStart;	//除帧头后的数据的第一个数据的位置
+	static uint8_t frameEnd;	//除帧尾后的数据的最后一个数据的下一个位置
+	static uint8_t dataLength;
 	Flag = 0;
 	dataLength = dataStartPoint <= dataEndPoint ? dataEndPoint - dataStartPoint : DATAREPOLENGTH - dataStartPoint - 1 + dataEndPoint;
 	
@@ -202,18 +154,18 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	}
 	else
 	{
-		return 0;
+		return 1;
 	}
 	
 	ANALYZE:
 	if(Flag == 0)
 	{
-		return 0;
+		return 2;
 	}
 	dataStartPoint = NEXT(frameEnd);
 	if(Flag == 1)
 	{
-		return 0;
+		return 3;
 	}
 	
 	//分析完整帧
@@ -238,7 +190,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	//检查长度
 	if(sizeof(ReceiveProtocolTransmit) != dataCounter)
 	{
-		return 0;
+		return 4;
 	}
 	
 	//校验
@@ -249,7 +201,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	}
 	if(sum != dataArranged[sizeof(ReceiveProtocolTransmit) - 1])
 	{
-		return 0;
+		return 5;
 	}
 	
 	//数据分配
@@ -266,8 +218,8 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	currentStatus.SP = temp.fusion.SP;
 	currentStatus.adjust = temp.fusion.adjust;
 	
-	return 1;
-	
+	return 0;
+
 	
 	#undef DATAREPOLENGTH
 	#undef NEXT
@@ -280,11 +232,12 @@ uint8_t LC12S_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
 	if(LC12S_ReceiveAnalyze())
 	{
 		*pd = currentStatus;
-		return 1;
+		return 0;
 	}
 	else
 	{
-		return 0;
+		*pd = currentStatus;
+		return 1;
 	}
 }
 

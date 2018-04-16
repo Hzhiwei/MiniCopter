@@ -390,11 +390,6 @@
               <FilePath>..\HardwareDriver\src\IIC.c</FilePath>
             </File>
             <File>
-              <FileName>LC12S.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HardwareDriver\src\LC12S.c</FilePath>
-            </File>
-            <File>
               <FileName>Motor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HardwareDriver\src\Motor.c</FilePath>
@@ -408,6 +403,11 @@
               <FileName>Flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HardwareDriver\src\Flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>Bluetooth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HardwareDriver\src\Bluetooth.c</FilePath>
             </File>
           </Files>
         </Group>

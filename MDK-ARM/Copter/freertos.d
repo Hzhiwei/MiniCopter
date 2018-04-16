@@ -87,6 +87,6 @@ copter\freertos.o: ..\mpl\eMPL-hal\eMPL_outputs.h
 copter\freertos.o: ..\mpl\driver\include\mpu.h
 copter\freertos.o: ..\task\inc\task_Control.h
 copter\freertos.o: ..\HardwareDriver\inc\Motor.h
-copter\freertos.o: ..\HardwareDriver\inc\LC12S.h
+copter\freertos.o: ..\HardwareDriver\inc\Bluetooth.h
 copter\freertos.o: ../Inc/externParam.h
 copter\freertos.o: ../Inc/iwdg.h

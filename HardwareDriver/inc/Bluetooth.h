@@ -1,5 +1,5 @@
-#ifndef __LS12S_H
-#define __LS12S_H
+#ifndef __BLUETOOTH_H
+#define __BLUETOOTH_H
 
 
 #include "stm32f3xx_hal.h"
@@ -41,7 +41,6 @@ typedef struct
 
 uint8_t LC12S_Init(uint16_t Net);
 void LC12S_Send(const SendProtocolDetail *pd);
-void LC12S_Start(void);
 uint8_t LC12S_ReceiveAnalyze(void);
 uint8_t LC12S_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd);
 void LC12S_GetData(ReceiveProtocolDetail *pd);

@@ -1,7 +1,7 @@
 #include "task_Control.h"
 #include "cmsis_os.h"
 #include "mpu6500.h"
-#include "LC12S.h"
+#include "Bluetooth.h"
 #include "Motor.h"
 #include "Algorithm.h"
 #include "Flash.h"
