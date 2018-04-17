@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Copter\Copter.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Copter\Copter.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Apr 17 18:45:53 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Apr 17 22:05:23 2018
 <BR><P>
 <H3>Maximum Stack Usage =        416 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1884,6 +1884,10 @@ Global Symbols
 <LI><a href="#[142]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IIC_ReadBuffer
 </UL>
 
+<P><STRONG><a name="[1c9]"></a>MPU6500_GetEulerOffset</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, mpu6500.o(i.MPU6500_GetEulerOffset))
+<BR><BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task_Control
+</UL>
+
 <P><STRONG><a name="[14b]"></a>MPU6500_InitConfig</STRONG> (Thumb, 188 bytes, Stack size 32 bytes, mpu6500.o(i.MPU6500_InitConfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = MPU6500_InitConfig &rArr; mpu_init &rArr; mpu_set_sample_rate &rArr; mpu_lp_accel_mode &rArr; mpu_configure_fifo &rArr; mpu_reset_fifo &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
@@ -1910,10 +1914,6 @@ Global Symbols
 <LI><a href="#[14c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_check
 </UL>
 <BR>[Called By]<UL><LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemInitConfigTask
-</UL>
-
-<P><STRONG><a name="[1c9]"></a>MPU6500_SetEulerOffset</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, mpu6500.o(i.MPU6500_SetEulerOffset))
-<BR><BR>[Called By]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;task_Control
 </UL>
 
 <P><STRONG><a name="[14c]"></a>MPU6500_check</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, mpu6500.o(i.MPU6500_check))
@@ -3097,7 +3097,7 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;inv_generate_fast_nomot
 </UL>
 
-<P><STRONG><a name="[5f]"></a>task_Control</STRONG> (Thumb, 334 bytes, Stack size 24 bytes, task_control.o(i.task_Control))
+<P><STRONG><a name="[5f]"></a>task_Control</STRONG> (Thumb, 384 bytes, Stack size 24 bytes, task_control.o(i.task_Control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 196<LI>Call Chain = task_Control &rArr; MPU6500_eMPLEular &rArr; inv_get_sensor_type_euler &rArr; inv_q29_mult
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskGetTickCount
@@ -3108,7 +3108,7 @@ Global Symbols
 <LI><a href="#[f7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_Send
 <LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Bluetooth_ReceiveAnalyzeAndGetData
 <LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_eMPLEular
-<LI><a href="#[1c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_SetEulerOffset
+<LI><a href="#[1c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MPU6500_GetEulerOffset
 <LI><a href="#[171]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_SetSpeed
 <LI><a href="#[1c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PID_InitConfig
 </UL>
