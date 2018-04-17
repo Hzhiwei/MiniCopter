@@ -118,7 +118,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>狕?P魿w狕?</Name>
+          <Name>p鹩</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -157,7 +157,7 @@
           <Type>0</Type>
           <LineNumber>73</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134238992</Address>
+          <Address>134239290</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -276,6 +276,11 @@
           <count>10</count>
           <WinNumber>2</WinNumber>
           <ItemText>CurrentEuler</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>huart1</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>

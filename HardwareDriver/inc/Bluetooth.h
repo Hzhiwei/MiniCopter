@@ -31,20 +31,26 @@ typedef struct
 	int8_t adjust;			
 }ReceiveProtocolDetail;
 
-//发送协议
+//通信协议的各个标志位，数据分开的细节
 typedef struct 
 {
-	//飞行状态	0 停止	1 飞行
-	uint8_t flyStatus;			
+	//模式 0 停止	1飞行	2等待抛飞
+	uint8_t mode;
+	//左右偏移调节
+	int8_t LRoffset;
+	//前后偏移调节	
+	int8_t FBoffset;			
 }SendProtocolDetail;
+
 
 
 uint8_t Bluetooth_Init(uint16_t Net);
 void Bluetooth_Start(void);
-void Bluetooth_Send(const SendProtocolDetail *pd);
 uint8_t Bluetooth_ReceiveAnalyze(void);
 uint8_t Bluetooth_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd);
 void Bluetooth_GetData(ReceiveProtocolDetail *pd);
+
+void Bluetooth_Send(const SendProtocolDetail *pd);
 
 
 #endif

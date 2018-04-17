@@ -43,54 +43,44 @@ byte5 偏移调节：
 		bit0 : 
 byte6 校验和
 */
-typedef union 
+typedef struct
 {
-	struct combin
-	{
-		uint8_t mode;
-		uint8_t power;
-		int8_t LR;
-		int8_t FB;
-		int8_t SP;
-		uint8_t adjust;
-	}fusion;
-	uint8_t array[sizeof(struct combin)];	//最后一个字节为校验和
+	uint8_t mode;
+	uint8_t power;
+	int8_t LR;
+	int8_t FB;
+	int8_t SP;
+	uint8_t adjust;
 }ReceiveProtocolTransmit;
 
 
 //将协议的标志位结合，与数据一起压缩后并用于传输的结构体
-/*
-byte0 状体：
-		bit7 : 0 停止,1 飞行
-		bit6 : 
-		bit5 : 
-		bit4 : 
-		bit3 : 
-		bit2 : 
-		bit1 : 
-		bit0 : 
-*/
 typedef struct 
 {
-	uint8_t status;
-	uint8_t sum;
+	//模式 0 停止	1飞行	2等待抛飞
+	uint8_t mode;
+	//左右偏移调节
+	int8_t LRoffset;
+	//前后偏移调节	
+	int8_t FBoffset;	
 }SendProtocolTransmit;
 
 
 static ReceiveProtocolDetail currentStatus;
 
 
-static uint8_t SendBuffer[32];
+static uint8_t SendBuffer[2 * sizeof(SendProtocolTransmit) + 4];
 static uint8_t ReceiveBuffer[RBLENGTH];
 
-
-static void Bluetooth_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);	
 
 
 uint8_t Bluetooth_Init(uint16_t Net)
 {
 	return 0;
 }
+
+
+/********************************	接收	*************************************/
 
 
 void Bluetooth_Start(void)
@@ -119,7 +109,7 @@ uint8_t Bluetooth_ReceiveAnalyze(void)
 	}
 	
 	//重新开始接受
-	HAL_UART_AbortTransmit_IT(&huart1);
+	HAL_UART_AbortReceive_IT(&huart1);
 	HAL_UART_Receive_IT(&huart1, ReceiveBuffer, RBLENGTH);
 	
 	//查找帧头或帧尾
@@ -220,15 +210,15 @@ uint8_t Bluetooth_ReceiveAnalyze(void)
 	ReceiveProtocolTransmit temp;
 	for(uint8_t i = 0; i < sizeof(ReceiveProtocolTransmit); ++i)
 	{
-		temp.array[i] = dataArranged[i];
+		((uint8_t *)&temp)[i] = dataArranged[i];
 	}
-	currentStatus.locked = temp.fusion.mode & 0x80;
-	currentStatus.headMode = temp.fusion.mode & 0x40;
-	currentStatus.power = temp.fusion.power;
-	currentStatus.LR = temp.fusion.LR;
-	currentStatus.FB = temp.fusion.FB;
-	currentStatus.SP = temp.fusion.SP;
-	currentStatus.adjust = temp.fusion.adjust;
+	currentStatus.locked = temp.mode & 0x80;
+	currentStatus.headMode = temp.mode & 0x40;
+	currentStatus.power = temp.power;
+	currentStatus.LR = temp.LR;
+	currentStatus.FB = temp.FB;
+	currentStatus.SP = temp.SP;
+	currentStatus.adjust = temp.adjust;
 	
 	return 0;
 
@@ -260,10 +250,18 @@ void Bluetooth_GetData(ReceiveProtocolDetail *pd)
 }
 
 
+/********************************	发送	*************************************/
+
+
 void Bluetooth_Send(const SendProtocolDetail *pd)
 {
 	SendProtocolTransmit pt;
-	Bluetooth_PT2PD(pd, &pt);
+	
+	memset(&pt, 0, sizeof(SendProtocolTransmit));
+	
+	pt.mode = pd->mode;
+	pt.FBoffset = pd->FBoffset;
+	pt.LRoffset = pd->LRoffset;
 	
 	uint8_t lendgth = 0;
 	SendBuffer[lendgth++] = 0xFF;
@@ -280,27 +278,19 @@ void Bluetooth_Send(const SendProtocolDetail *pd)
 			SendBuffer[lendgth++] = *((uint8_t *)(&pt) + i);
 		}
 	}
+	
+	SendBuffer[lendgth] = 0;
+	for(uint8_t i = 2; i < lendgth; ++i)
+	{
+		SendBuffer[lendgth] += SendBuffer[i];
+	}
+	
+	lendgth++;
+	
 	SendBuffer[lendgth++] = 0xFF;
 	SendBuffer[lendgth++] = 0x02;
-	HAL_UART_Transmit_IT(&huart1, (uint8_t *)(&SendBuffer), lendgth);
-}
-
-
-//将SendProtocolDetail转化为SendProtocolTransmit
-static void Bluetooth_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt)
-{
-	memset(pt, 0, sizeof(SendProtocolTransmit));
 	
-	if(pd->flyStatus)
-	{
-		pt->status |= 0x80;
-	}
-	uint8_t sum = 0;
-	for(uint8_t i = 0; i < sizeof(SendProtocolTransmit) - 1; ++i)
-	{
-		sum += *((uint8_t *)pt + i);
-	}
-	pt->sum = sum;
+	HAL_UART_Transmit_IT(&huart1, (uint8_t *)(&SendBuffer), lendgth);
 }
 
 

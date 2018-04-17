@@ -18,6 +18,7 @@ static uint16_t lostCounter = 0;
 static Euler_Type CurrentEuler;
 static Acce_Type CurrentAcc;
 static Gyro_Type CurrentGyro;
+
 static ReceiveProtocolDetail rpd = 
 	{
 		.locked = 1,
@@ -28,6 +29,12 @@ static ReceiveProtocolDetail rpd =
 		.SP = 0,
 		.adjust = 0
 	};
+static SendProtocolDetail spd =
+	{
+		.mode = 0,
+		.LRoffset = 1,
+		.FBoffset = 2
+	};
 
 static void Motor_Control(void);
 
@@ -35,12 +42,9 @@ static void Motor_Control(void);
 void task_Control(const void *Parameters)
 {
 	TickType_t tick;
+	uint8_t linking = 0;
 	uint16_t LEDCounter = 0;
 	float EulerOffet[3];
-	SendProtocolDetail spd =
-	{
-		.flyStatus = 123
-	};
 	
 	PID_InitConfig(&PitchOUTPID, 10.5, 0, 10, 0, 100);
 	PID_InitConfig(&PitchINPID, 0.25, 0, 1, 0, 25);
@@ -48,6 +52,8 @@ void task_Control(const void *Parameters)
 	PID_InitConfig(&RollINPID, 0.25, 0, 2, 0, 25);
 	PID_InitConfig(&YawOUTPID, 5, 0, 0, 0, 30);
 	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 50);
+	
+	uint16_t sendCounter = 0;
 	
 	//Flash_Read_Mpu6500EulerOffet(EulerOffet);
 	MPU6500_SetEulerOffset(EulerOffet);
@@ -65,7 +71,37 @@ void task_Control(const void *Parameters)
 		{
 			++lostCounter;
 		}
-		Motor_Control();
+		
+		if(lostCounter >= LOSTSTOP)
+		{
+			linking = 0;
+		}
+		else
+		{
+			linking = 1;
+		}
+		
+		if(linking)
+		{
+			Motor_Control();
+			
+			if(sendCounter <= 10)
+			{
+				sendCounter++;
+			}
+			else
+			{
+				sendCounter = 0;
+				Bluetooth_Send(&spd);
+			}
+		}
+		else
+		{
+			Motor_SetSpeed(0, 0);
+			Motor_SetSpeed(1, 0);
+			Motor_SetSpeed(2, 0);
+			Motor_SetSpeed(3, 0);
+		}
 		
 		if(LEDCounter < 60)
 		{
@@ -76,11 +112,6 @@ void task_Control(const void *Parameters)
 			LEDCounter = 0;
 			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
 		}
-		
-//		if(rpd.power > 50)
-//			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
-//		else
-//			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 		
         HAL_IWDG_Refresh(&hiwdg);
 		
@@ -126,11 +157,6 @@ static void Motor_Control(void)
 	motorSpeed[2] = motorSpeed[2] > 100 ? 100 : motorSpeed[2];
 	motorSpeed[3] = tempSpeed[3] < 0 ? 0 : tempSpeed[3];
 	motorSpeed[3] = motorSpeed[3] > 100 ? 100 : motorSpeed[3];
-	
-//	motorSpeed[0] = 0;
-//	motorSpeed[1] = 0;
-//	motorSpeed[2] = 0;
-//	motorSpeed[3] = 0;
 	
 	Motor_SetSpeed(0, motorSpeed[0]);
 	Motor_SetSpeed(1, motorSpeed[1]);
