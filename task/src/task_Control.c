@@ -35,6 +35,9 @@ static SendProtocolDetail spd =
 		.LRoffset = 1,
 		.FBoffset = 2
 	};
+	
+//飞行状态	0 停止	1 正常飞行	2 等待抛飞
+static uint8_t flyStatus = 0;
 
 static void Motor_Control(void);
 
@@ -56,13 +59,17 @@ void task_Control(const void *Parameters)
 	uint16_t sendCounter = 0;
 	
 	//Flash_Read_Mpu6500EulerOffet(EulerOffet);
-	MPU6500_SetEulerOffset(EulerOffet);
+	//MPU6500_SetEulerOffset(EulerOffet);
+	MPU6500_GetEulerOffset(EulerOffet);
 	
 	while(1)
 	{
 		tick = xTaskGetTickCount();
 		
+		//获取欧拉角
 		MPU6500_eMPLEular(&CurrentEuler, &CurrentAcc, &CurrentGyro, tick);
+		
+		//分析无线数据
 		if(Bluetooth_ReceiveAnalyzeAndGetData(&rpd))
 		{
 			lostCounter = 0;
@@ -72,6 +79,7 @@ void task_Control(const void *Parameters)
 			++lostCounter;
 		}
 		
+		//根据无线帧率判断连接状态
 		if(lostCounter >= LOSTSTOP)
 		{
 			linking = 0;
@@ -82,9 +90,12 @@ void task_Control(const void *Parameters)
 		}
 		
 		if(linking)
+			//无线连接
 		{
+			//电机PID
 			Motor_Control();
 			
+			//10个周期发送一次数据
 			if(sendCounter <= 10)
 			{
 				sendCounter++;
@@ -92,10 +103,14 @@ void task_Control(const void *Parameters)
 			else
 			{
 				sendCounter = 0;
+				
+				spd.FBoffset = (int8_t)(EulerOffet[0] * 10);
+				spd.LRoffset = (int8_t)(EulerOffet[1] * 10);
 				Bluetooth_Send(&spd);
 			}
 		}
 		else
+			//无线断线
 		{
 			Motor_SetSpeed(0, 0);
 			Motor_SetSpeed(1, 0);
@@ -103,6 +118,7 @@ void task_Control(const void *Parameters)
 			Motor_SetSpeed(3, 0);
 		}
 		
+		//LED闪烁
 		if(LEDCounter < 60)
 		{
 			++LEDCounter;
@@ -113,6 +129,7 @@ void task_Control(const void *Parameters)
 			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
 		}
 		
+		//看门狗喂狗
         HAL_IWDG_Refresh(&hiwdg);
 		
 		vTaskDelayUntil(&tick, 5);
