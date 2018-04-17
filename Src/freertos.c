@@ -123,6 +123,8 @@ void SystemInitConfigTask(void const * argument)
 	
 	uint8_t counter = 0;
 	
+	Bluetooth_Start();
+	
 	for(counter = 0; counter < 10; ++counter)
 	{
 		if(!MPU6500_InitConfig())

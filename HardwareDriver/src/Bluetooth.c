@@ -54,7 +54,7 @@ typedef union
 		int8_t SP;
 		uint8_t adjust;
 	}fusion;
-	uint8_t array[sizeof(struct combin) + 1];	//最后一个字节为校验和
+	uint8_t array[sizeof(struct combin)];	//最后一个字节为校验和
 }ReceiveProtocolTransmit;
 
 
@@ -84,16 +84,22 @@ static uint8_t SendBuffer[32];
 static uint8_t ReceiveBuffer[RBLENGTH];
 
 
-static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);	
+static void Bluetooth_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt);	
 
 
-uint8_t LC12S_Init(uint16_t Net)
+uint8_t Bluetooth_Init(uint16_t Net)
 {
 	return 0;
 }
 
 
-uint8_t LC12S_ReceiveAnalyze(void)
+void Bluetooth_Start(void)
+{
+	HAL_UART_Receive_IT(&huart1, ReceiveBuffer, RBLENGTH);
+}
+
+
+uint8_t Bluetooth_ReceiveAnalyze(void)
 {
 	#define DATAREPOLENGTH	128	//数据处理环形缓存长度
 	#define NEXT(x)	(((x)+1)%DATAREPOLENGTH)
@@ -121,9 +127,9 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	static uint8_t frameStart;	//除帧头后的数据的第一个数据的位置
 	static uint8_t frameEnd;	//除帧尾后的数据的最后一个数据的下一个位置
 	static uint8_t dataLength;
-	Flag = 0;
 	dataLength = dataStartPoint <= dataEndPoint ? dataEndPoint - dataStartPoint : DATAREPOLENGTH - dataStartPoint - 1 + dataEndPoint;
 	
+	Flag = 0;
 	if(dataLength >= sizeof(ReceiveProtocolTransmit) + 4)
 	{
 		for(int i = PREVIOUS(PREVIOUS(dataEndPoint)); i != dataStartPoint; i = PREVIOUS(i))
@@ -168,6 +174,19 @@ uint8_t LC12S_ReceiveAnalyze(void)
 		return 3;
 	}
 	
+	frameEnd = PREVIOUS(frameEnd);
+	
+	//校验
+	uint8_t sum = 0;
+	for(uint8_t i = frameStart; i != frameEnd; i = NEXT(i))
+	{
+		sum += dataRepo[i];
+	}
+	if(sum != dataRepo[frameEnd])
+	{
+		return 5;
+	}
+	
 	//分析完整帧
 	uint8_t dataCounter = 0;
 	for(uint8_t i = frameStart; i != frameEnd; ++dataCounter, i = NEXT(i))
@@ -175,6 +194,10 @@ uint8_t LC12S_ReceiveAnalyze(void)
 		if(dataRepo[i] == 0xFF)
 		{
 			i = NEXT(i);
+			if(dataCounter >= sizeof(ReceiveProtocolTransmit))
+			{
+				return 6;
+			}
 			switch(dataRepo[i])
 			{
 				case 0x00 : dataArranged[dataCounter] = 0xFF; break;
@@ -190,18 +213,7 @@ uint8_t LC12S_ReceiveAnalyze(void)
 	//检查长度
 	if(sizeof(ReceiveProtocolTransmit) != dataCounter)
 	{
-		return 4;
-	}
-	
-	//校验
-	uint8_t sum = 0;
-	for(uint8_t i = 0; i < sizeof(ReceiveProtocolTransmit) - 1; ++i)
-	{
-		sum += dataArranged[i];
-	}
-	if(sum != dataArranged[sizeof(ReceiveProtocolTransmit) - 1])
-	{
-		return 5;
+		return 7;
 	}
 	
 	//数据分配
@@ -227,9 +239,9 @@ uint8_t LC12S_ReceiveAnalyze(void)
 }
 
 
-uint8_t LC12S_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
+uint8_t Bluetooth_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
 {
-	if(LC12S_ReceiveAnalyze())
+	if(Bluetooth_ReceiveAnalyze())
 	{
 		*pd = currentStatus;
 		return 0;
@@ -242,16 +254,16 @@ uint8_t LC12S_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
 }
 
 
-void LC12S_GetData(ReceiveProtocolDetail *pd)
+void Bluetooth_GetData(ReceiveProtocolDetail *pd)
 {
 	*pd = currentStatus;
 }
 
 
-void LC12S_Send(const SendProtocolDetail *pd)
+void Bluetooth_Send(const SendProtocolDetail *pd)
 {
 	SendProtocolTransmit pt;
-	LC12S_PT2PD(pd, &pt);
+	Bluetooth_PT2PD(pd, &pt);
 	
 	uint8_t lendgth = 0;
 	SendBuffer[lendgth++] = 0xFF;
@@ -275,7 +287,7 @@ void LC12S_Send(const SendProtocolDetail *pd)
 
 
 //将SendProtocolDetail转化为SendProtocolTransmit
-static void LC12S_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt)
+static void Bluetooth_PT2PD(const SendProtocolDetail *pd, SendProtocolTransmit *pt)
 {
 	memset(pt, 0, sizeof(SendProtocolTransmit));
 	

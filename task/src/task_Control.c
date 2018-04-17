@@ -57,7 +57,7 @@ void task_Control(const void *Parameters)
 		tick = xTaskGetTickCount();
 		
 		MPU6500_eMPLEular(&CurrentEuler, &CurrentAcc, &CurrentGyro, tick);
-		if(LC12S_ReceiveAnalyzeAndGetData(&rpd))
+		if(Bluetooth_ReceiveAnalyzeAndGetData(&rpd))
 		{
 			lostCounter = 0;
 		}
@@ -76,6 +76,11 @@ void task_Control(const void *Parameters)
 			LEDCounter = 0;
 			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_8);
 		}
+		
+//		if(rpd.power > 50)
+//			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+//		else
+//			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
 		
         HAL_IWDG_Refresh(&hiwdg);
 		

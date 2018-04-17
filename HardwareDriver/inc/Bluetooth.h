@@ -39,11 +39,12 @@ typedef struct
 }SendProtocolDetail;
 
 
-uint8_t LC12S_Init(uint16_t Net);
-void LC12S_Send(const SendProtocolDetail *pd);
-uint8_t LC12S_ReceiveAnalyze(void);
-uint8_t LC12S_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd);
-void LC12S_GetData(ReceiveProtocolDetail *pd);
+uint8_t Bluetooth_Init(uint16_t Net);
+void Bluetooth_Start(void);
+void Bluetooth_Send(const SendProtocolDetail *pd);
+uint8_t Bluetooth_ReceiveAnalyze(void);
+uint8_t Bluetooth_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd);
+void Bluetooth_GetData(ReceiveProtocolDetail *pd);
 
 
 #endif
