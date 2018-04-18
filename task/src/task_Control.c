@@ -31,7 +31,8 @@ static ReceiveProtocolDetail rpd =
 	};
 static SendProtocolDetail spd =
 	{
-		.mode = 0,
+		.flyMode = 0,
+		.offsetWriteStatus = 0,
 		.LRoffset = 1,
 		.FBoffset = 2
 	};
@@ -47,7 +48,8 @@ void task_Control(const void *Parameters)
 	TickType_t tick;
 	uint8_t linking = 0;
 	uint16_t LEDCounter = 0;
-	float EulerOffet[3];
+	float *EulerOffet;
+	uint8_t offsetAdjustFlag = 0;
 	
 	PID_InitConfig(&PitchOUTPID, 10.5, 0, 10, 0, 100);
 	PID_InitConfig(&PitchINPID, 0.25, 0, 1, 0, 25);
@@ -58,9 +60,8 @@ void task_Control(const void *Parameters)
 	
 	uint16_t sendCounter = 0;
 	
-	//Flash_Read_Mpu6500EulerOffet(EulerOffet);
-	//MPU6500_SetEulerOffset(EulerOffet);
-	MPU6500_GetEulerOffset(EulerOffet);
+	EulerOffet = MPU6500_GetEulerOffsetPoint();
+	Flash_Read_Mpu6500EulerOffet(EulerOffet);
 	
 	while(1)
 	{
@@ -70,7 +71,7 @@ void task_Control(const void *Parameters)
 		MPU6500_eMPLEular(&CurrentEuler, &CurrentAcc, &CurrentGyro, tick);
 		
 		//分析无线数据
-		if(Bluetooth_ReceiveAnalyzeAndGetData(&rpd))
+		if(!Bluetooth_ReceiveAnalyzeAndGetData(&rpd))
 		{
 			lostCounter = 0;
 		}
@@ -108,6 +109,63 @@ void task_Control(const void *Parameters)
 				spd.LRoffset = (int8_t)(EulerOffet[1] * 10);
 				Bluetooth_Send(&spd);
 			}
+			
+			//偏移调节写入
+			switch(rpd.adjust)
+			{
+				case 1 :
+				{
+					if((EulerOffet[0] <= 10) && (offsetAdjustFlag == 0))
+					{
+						EulerOffet[0] += 0.1;
+						offsetAdjustFlag = 1;
+						spd.offsetWriteStatus = 1;
+					}
+					break;
+				}
+				case 2 :
+				{
+					if((EulerOffet[0] >= -10) && (offsetAdjustFlag == 0))
+					{
+						EulerOffet[0] -= 0.1;
+						offsetAdjustFlag = 1;
+						spd.offsetWriteStatus = 1;
+					}
+					break;
+				}
+				case 3 :
+				{
+					if((EulerOffet[1] >= -10) && (offsetAdjustFlag == 0))
+					{
+						EulerOffet[1] -= 0.1;
+						offsetAdjustFlag = 1;
+						spd.offsetWriteStatus = 1;
+					}
+					break;
+				}
+				case 4 :
+				{
+					if((EulerOffet[1] <= 10) && (offsetAdjustFlag == 0))
+					{
+						EulerOffet[1] += 0.1;
+						offsetAdjustFlag = 1;
+						spd.offsetWriteStatus = 1;
+					}
+					break;
+				}
+				case 5 :
+				{
+					Flash_Write_Mpu6500EulerOffet(EulerOffet);
+					spd.offsetWriteStatus = 0;
+					break;
+				}
+				default :
+				{
+					offsetAdjustFlag = 0;
+					break;
+				}
+			}
+			
 		}
 		else
 			//无线断线

@@ -27,15 +27,21 @@ Project File Date:  04/16/2018
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'D:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Copter'
-compiling mpu6500.c...
-..\HardwareDriver\src\mpu6500.c(120): warning:  #940-D: missing return statement at end of non-void function "MPU6500_SetEulerOffset" 
-  }
-..\HardwareDriver\src\mpu6500.c(127): warning:  #940-D: missing return statement at end of non-void function "MPU6500_GetEulerOffset" 
-  }
-..\HardwareDriver\src\mpu6500.c: 2 warnings, 0 errors
+compiling task_Control.c...
+..\task\src\task_Control.c(120): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  						EulerOffet[0] += 0.1;
+..\task\src\task_Control.c(130): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  						EulerOffet[0] -= 0.1;
+..\task\src\task_Control.c(140): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  						EulerOffet[1] -= 0.1;
+..\task\src\task_Control.c(150): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  						EulerOffet[1] += 0.1;
+..\task\src\task_Control.c(41): warning:  #177-D: variable "flyStatus"  was declared but never referenced
+  static uint8_t flyStatus = 0;
+..\task\src\task_Control.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=44328 RO-data=1304 RW-data=248 ZI-data=9200  
-"Copter\Copter.axf" - 0 Error(s), 2 Warning(s).
+Program Size: Code=45880 RO-data=1304 RW-data=248 ZI-data=9232  
+"Copter\Copter.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   .\RTE\_Copter

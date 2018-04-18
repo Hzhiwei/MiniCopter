@@ -107,23 +107,29 @@
 unsigned char *mpl_key = (unsigned char*)"eMPL 5.1";		//使用empl库必须定义
 
 static int16_t GyroOffset[3] = {7, 16, 23};		//角速度偏移
-float EulerOffset[3] = {1.11, 0.89, 0};
+static float EulerOffset[3] = {1.11, 0.89, 0};
 
 void mpu_accel_lpfset(void);
 
 
-uint8_t MPU6500_SetEulerOffset(float offset[3])
+void MPU6500_SetEulerOffset(float offset[3])
 {
 	EulerOffset[0] = offset[0];
 	EulerOffset[1] = offset[1];
 	EulerOffset[2] = offset[2];
 }
 
-uint8_t MPU6500_GetEulerOffset(float offset[3])
+void MPU6500_GetEulerOffset(float offset[3])
 {
 	offset[0] = EulerOffset[0];
 	offset[1] = EulerOffset[1];
 	offset[2] = EulerOffset[2];
+}
+
+
+float *MPU6500_GetEulerOffsetPoint(void)
+{
+	return EulerOffset;
 }
 
 

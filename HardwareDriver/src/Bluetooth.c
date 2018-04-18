@@ -231,7 +231,7 @@ uint8_t Bluetooth_ReceiveAnalyze(void)
 
 uint8_t Bluetooth_ReceiveAnalyzeAndGetData(ReceiveProtocolDetail *pd)
 {
-	if(Bluetooth_ReceiveAnalyze())
+	if(!Bluetooth_ReceiveAnalyze())
 	{
 		*pd = currentStatus;
 		return 0;
@@ -259,7 +259,8 @@ void Bluetooth_Send(const SendProtocolDetail *pd)
 	
 	memset(&pt, 0, sizeof(SendProtocolTransmit));
 	
-	pt.mode = pd->mode;
+	pt.mode |= pd->flyMode;
+	pt.mode |= pd->offsetWriteStatus << 2;
 	pt.FBoffset = pd->FBoffset;
 	pt.LRoffset = pd->LRoffset;
 	
