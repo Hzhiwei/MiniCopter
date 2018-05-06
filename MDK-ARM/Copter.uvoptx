@@ -117,10 +117,6 @@
       <TargetDriverDllRegistry>
         <SetRegEntry>
           <Number>0</Number>
-          <Key>DLGUARM</Key>
-        </SetRegEntry>
-        <SetRegEntry>
-          <Number>0</Number>
           <Key>ARMRTXEVENTFLAGS</Key>
           <Name>-L70 -Z18 -C0 -M0 -T1</Name>
         </SetRegEntry>
@@ -156,7 +152,7 @@
           <Type>0</Type>
           <LineNumber>73</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134240490</Address>
+          <Address>134240518</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -265,6 +261,11 @@
           <count>8</count>
           <WinNumber>2</WinNumber>
           <ItemText>SendBuffer,0x10</ItemText>
+        </Ww>
+        <Ww>
+          <count>9</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>tempSpeed,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <MemoryWindow1>

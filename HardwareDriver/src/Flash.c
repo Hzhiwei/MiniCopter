@@ -15,9 +15,13 @@ static uint8_t Flash_Write(uint32_t addr, uint8_t *src, uint32_t length);
 
 void Flash_Read_Mpu6500EulerOffet(float Offset[3])
 {
+	float temp;
 	for(uint32_t i = 0; i < FLASH_ROCKER_LENGTH; ++i)
 	{
-		*((uint8_t *)(&Offset[0]) + i) = *((uint8_t *)(FLASH_PAGE_127_START + FLASH_ROCKER_START + i));
+		temp = *((uint8_t *)(FLASH_PAGE_127_START + FLASH_ROCKER_START + i));
+		temp = temp > 10 ? 10 : temp;
+		temp = temp < -10 ? -10 : temp;
+		*((uint8_t *)(&Offset[0]) + i) = temp;
 	}
 }
 

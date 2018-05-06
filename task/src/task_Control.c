@@ -8,7 +8,7 @@
 #include "externParam.h"
 
 
-#define RCROCKERRATE	4.0f
+#define RCROCKERRATE	7.5f
 
 #define LOSTSTOP	20
 
@@ -51,12 +51,12 @@ void task_Control(const void *Parameters)
 	float *EulerOffet;
 	uint8_t offsetAdjustFlag = 0;
 	
-	PID_InitConfig(&PitchOUTPID, 10.5, 0, 10, 0, 100);
+	PID_InitConfig(&PitchOUTPID, 10.5, 0, 0, 0, 100);
 	PID_InitConfig(&PitchINPID, 0.25, 0, 1, 0, 25);
-	PID_InitConfig(&RollOUTPID, 10.5, 0, 10, 0, 100);
+	PID_InitConfig(&RollOUTPID, 10.5, 0, 0, 0, 100);
 	PID_InitConfig(&RollINPID, 0.25, 0, 2, 0, 25);
-	PID_InitConfig(&YawOUTPID, 5, 0, 0, 0, 30);
-	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 50);
+	PID_InitConfig(&YawOUTPID, 2.5, 0, 0, 0, 30);
+	PID_InitConfig(&YawINPID, 2, 0, 0, 0, 35);
 	
 	uint16_t sendCounter = 0;
 	
