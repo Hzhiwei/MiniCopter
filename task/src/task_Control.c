@@ -6,6 +6,7 @@
 #include "Algorithm.h"
 #include "Flash.h"
 #include "externParam.h"
+#include <math.h>
 
 
 #define RCROCKERRATE	7.5f
@@ -42,7 +43,6 @@ static uint8_t flyStatus = 0;
 
 static void Motor_Control(void);
 
- 
 void task_Control(const void *Parameters)
 {
 	TickType_t tick;
@@ -174,6 +174,8 @@ void task_Control(const void *Parameters)
 			Motor_SetSpeed(1, 0);
 			Motor_SetSpeed(2, 0);
 			Motor_SetSpeed(3, 0);
+			Motor_SetSpeed(4, 0);
+			Motor_SetSpeed(5, 0);
 		}
 		
 		//LEDÉÁË¸
@@ -188,7 +190,7 @@ void task_Control(const void *Parameters)
 		}
 		
 		//¿´ÃÅ¹·Î¹¹·
-        HAL_IWDG_Refresh(&hiwdg);
+    HAL_IWDG_Refresh(&hiwdg);
 		
 		vTaskDelayUntil(&tick, 5);
 	}
@@ -197,8 +199,8 @@ void task_Control(const void *Parameters)
 
 static void Motor_Control(void)
 {
-	static uint8_t motorSpeed[4];
-	static int16_t tempSpeed[4];
+	static uint8_t motorSpeed[6];
+	static int16_t tempSpeed[6];
 	
 	if((lostCounter >= LOSTSTOP)
 		|| (rpd.locked)
@@ -208,6 +210,8 @@ static void Motor_Control(void)
 		Motor_SetSpeed(1, 0);
 		Motor_SetSpeed(2, 0);
 		Motor_SetSpeed(3, 0);
+		Motor_SetSpeed(4, 0);
+		Motor_SetSpeed(5, 0);
 		
 		return;
 	}
@@ -219,6 +223,8 @@ static void Motor_Control(void)
 	PID_Calculate(&YawOUTPID, -rpd.SP / RCROCKERRATE, CurrentEuler.Yaw);
 	PID_Calculate(&YawINPID, YawOUTPID.PIDout, CurrentGyro.z);
 	
+	
+#if FOURAXIS
 	tempSpeed[0] = (int16_t)rpd.power + PitchINPID.PIDout - RollINPID.PIDout + YawINPID.PIDout;
 	tempSpeed[1] = (int16_t)rpd.power - PitchINPID.PIDout - RollINPID.PIDout - YawINPID.PIDout;
 	tempSpeed[2] = (int16_t)rpd.power - PitchINPID.PIDout + RollINPID.PIDout + YawINPID.PIDout;
@@ -237,6 +243,12 @@ static void Motor_Control(void)
 	Motor_SetSpeed(1, motorSpeed[1]);
 	Motor_SetSpeed(2, motorSpeed[2]);
 	Motor_SetSpeed(3, motorSpeed[3]);
+#else
+	float Hypotenuse = sqrt(PitchINPID.PIDout * PitchINPID.PIDout + RollINPID.PIDout * RollINPID.PIDout);
+	float delta = a
+	
+#endif	
+
 }
 
 
