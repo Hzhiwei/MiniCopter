@@ -11,7 +11,6 @@
 <filestoremove>
     <file>
     <name>..\Drivers\CMSIS\Device\ST\STM32F3xx\Source\Templates\arm\startup_stm32f303xc.s</name>
-    <name>..\Src\system_stm32f3xx.c</name>
     </file>
 </filestoremove>
 

@@ -3,7 +3,7 @@
 
 #include "stm32f3xx_hal.h"
 
-#define FOURAXIS		1
+#define FOURAXIS		0
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;

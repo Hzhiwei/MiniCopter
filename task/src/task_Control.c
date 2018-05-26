@@ -90,6 +90,7 @@ void task_Control(const void *Parameters)
 			linking = 1;
 		}
 		
+		
 		if(linking)
 			//无线连接
 		{
@@ -245,8 +246,38 @@ static void Motor_Control(void)
 	Motor_SetSpeed(3, motorSpeed[3]);
 #else
 	float Hypotenuse = sqrt(PitchINPID.PIDout * PitchINPID.PIDout + RollINPID.PIDout * RollINPID.PIDout);
-	float delta = a
+	float delta = acos(RollINPID.PIDout / Hypotenuse);
+	if(PitchINPID.PIDout < 0)
+	{
+		delta = 6.28319f - delta;
+	}
 	
+	tempSpeed[0] = (int16_t)rpd.power + cos(2.094395f - delta) * Hypotenuse + YawINPID.PIDout;
+	tempSpeed[1] = (int16_t)rpd.power + cos(4.188790f - delta) * Hypotenuse + YawINPID.PIDout;
+	tempSpeed[2] = (int16_t)rpd.power + cos(5.235988f - delta) * Hypotenuse - YawINPID.PIDout;
+	tempSpeed[3] = (int16_t)rpd.power + cos(1.047198f - delta) * Hypotenuse - YawINPID.PIDout;
+	tempSpeed[4] = (int16_t)rpd.power + cos(3.141593f - delta) * Hypotenuse - YawINPID.PIDout;
+	tempSpeed[5] = (int16_t)rpd.power + cos(0.000000f - delta) * Hypotenuse + YawINPID.PIDout;
+	
+	motorSpeed[0] = tempSpeed[0] < 0 ? 0 : tempSpeed[0];
+	motorSpeed[0] = motorSpeed[0] > 100 ? 100 : motorSpeed[0];
+	motorSpeed[1] = tempSpeed[1] < 0 ? 0 : tempSpeed[1];
+	motorSpeed[1] = motorSpeed[1] > 100 ? 100 : motorSpeed[1];
+	motorSpeed[2] = tempSpeed[2] < 0 ? 0 : tempSpeed[2];
+	motorSpeed[2] = motorSpeed[2] > 100 ? 100 : motorSpeed[2];
+	motorSpeed[3] = tempSpeed[3] < 0 ? 0 : tempSpeed[3];
+	motorSpeed[3] = motorSpeed[3] > 100 ? 100 : motorSpeed[3];
+	motorSpeed[4] = tempSpeed[4] < 0 ? 0 : tempSpeed[4];
+	motorSpeed[4] = motorSpeed[4] > 100 ? 100 : motorSpeed[4];
+	motorSpeed[5] = tempSpeed[5] < 0 ? 0 : tempSpeed[5];
+	motorSpeed[5] = motorSpeed[5] > 100 ? 100 : motorSpeed[5];
+	
+	Motor_SetSpeed(0, motorSpeed[0]);
+	Motor_SetSpeed(1, motorSpeed[1]);
+	Motor_SetSpeed(2, motorSpeed[2]);
+	Motor_SetSpeed(3, motorSpeed[3]);
+	Motor_SetSpeed(4, motorSpeed[4]);
+	Motor_SetSpeed(5, motorSpeed[5]);
 #endif	
 
 }

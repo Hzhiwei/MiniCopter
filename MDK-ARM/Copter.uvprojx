@@ -310,7 +310,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>3</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F303xC,EMPL,MPU6500,EMPL_TARGET_STM32F4</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;   ../Drivers/STM32F3xx_HAL_Driver/Inc;   ../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy;   ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;   ../Drivers/CMSIS/Device/ST/STM32F3xx/Include;   ../Middlewares/Third_Party/FreeRTOS/Source/include;   ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;   ../Drivers/CMSIS/Include;   ..\HardwareDriver\inc;   ..\task\inc;   ..\mpl\driver\include;   ..\mpl\driver\eMPL;   ..\mpl\driver\stm32L;   ..\mpl\eMPL-hal;   ..\mpl\mllite;   ..\mpl\mpl;   ..\task\inc</IncludePath>
+              <IncludePath>../Inc;    ../Drivers/STM32F3xx_HAL_Driver/Inc;    ../Drivers/STM32F3xx_HAL_Driver/Inc/Legacy;    ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;    ../Drivers/CMSIS/Device/ST/STM32F3xx/Include;    ../Middlewares/Third_Party/FreeRTOS/Source/include;    ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;    ../Drivers/CMSIS/Include;    ..\HardwareDriver\inc;    ..\task\inc;    ..\mpl\driver\include;    ..\mpl\driver\eMPL;    ..\mpl\driver\stm32L;    ..\mpl\eMPL-hal;    ..\mpl\mllite;    ..\mpl\mpl;    ..\task\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
