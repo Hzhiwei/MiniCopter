@@ -4,6 +4,7 @@
 #include "stm32f3xx_hal.h"
 
 #define FOURAXIS		0
+#define YAWDIFFENCE		30
 
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;

@@ -202,6 +202,12 @@ static void Motor_Control(void)
 {
 	static uint8_t motorSpeed[6];
 	static int16_t tempSpeed[6];
+	static float targetYaw = 0.0f;
+	
+	targetYaw -= rpd.SP / RCROCKERRATE;
+	
+	targetYaw = targetYaw < CurrentEuler.Yaw - YAWDIFFENCE ? CurrentEuler.Yaw - YAWDIFFENCE : targetYaw;
+	targetYaw = targetYaw > CurrentEuler.Yaw + YAWDIFFENCE ? CurrentEuler.Yaw + YAWDIFFENCE : targetYaw;
 	
 	if((lostCounter >= LOSTSTOP)
 		|| (rpd.locked)
@@ -221,7 +227,7 @@ static void Motor_Control(void)
 	PID_Calculate(&PitchINPID, PitchOUTPID.PIDout, CurrentGyro.y);
 	PID_Calculate(&RollOUTPID, -rpd.LR / RCROCKERRATE, CurrentEuler.Roll);
 	PID_Calculate(&RollINPID, RollOUTPID.PIDout, CurrentGyro.x);
-	PID_Calculate(&YawOUTPID, -rpd.SP / RCROCKERRATE, CurrentEuler.Yaw);
+	PID_Calculate(&YawOUTPID, targetYaw, CurrentEuler.Yaw);
 	PID_Calculate(&YawINPID, YawOUTPID.PIDout, CurrentGyro.z);
 	
 	
